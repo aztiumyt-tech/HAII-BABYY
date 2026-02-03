@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Julianna 💖</title>
+
+<style>
+:root {
+  --pink:#ff4d8d;
+  --hot:#ff2f6d;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', system-ui;
+}
+
+body {
+  margin: 0;
+  height: 100svh;
+  background: linear-gradient(135deg,#ff9a9e,#fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* floating hearts */
+.heart {
+  position: absolute;
+  bottom: -20px;
+  font-size: 22px;
+  animation: float linear infinite;
+  opacity: .85;
+}
+
+@keyframes float {
+  from { transform: translateY(0) scale(.8); opacity:0; }
+  10% { opacity:1; }
+  to { transform: translateY(-120svh) scale(1.6); opacity:0; }
+}
+
+/* card */
+.card {
+  width: min(92vw,380px);
+  padding: 26px 22px 34px;
+  border-radius: 30px;
+  background: rgba(255,255,255,.35);
+  backdrop-filter: blur(20px);
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0,0,0,.25);
+  animation: pop .9s cubic-bezier(.18,1.3,.6,1);
+  z-index: 5;
+}
+
+@keyframes pop {
+  from { transform: scale(.4) rotate(-6deg); opacity:0; }
+  to { transform: scale(1); opacity:1; }
+}
+
+/* photo */
+.photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: 0 15px 30px rgba(0,0,0,.25);
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+h1 {
+  font-size: clamp(1.8rem,6vw,2.3rem);
+  color: var(--hot);
+  line-height: 1.15;
+  margin-bottom: 10px;
+  animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+  50% { transform: scale(1.05); }
+}
+
+p {
+  color:#5a2a3c;
+  margin-bottom: 22px;
+}
+
+/* buttons */
+.buttons {
+  display:flex;
+  gap:12px;
+}
+
+button {
+  flex:1;
+  border:none;
+  padding:14px;
+  border-radius:999px;
+  font-size:1rem;
+  cursor:pointer;
+}
+
+#yes {
+  background: linear-gradient(135deg,var(--pink),var(--hot));
+  color:white;
+  box-shadow:0 12px 30px rgba(255,77,141,.6);
+}
+
+#no {
+  background:rgba(255,255,255,.8);
+}
+
+/* volume button */
+.volume {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  background: rgba(255,255,255,.8);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 50;
+}
+
+/* overlay */
+.overlay {
+  position:fixed;
+  inset:0;
+  background: radial-gradient(circle at top,#ffd1e8,#ff5fa2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:white;
+  padding:20px;
+  z-index:20;
+  opacity:0;
+  pointer-events:none;
+  transition:.6s;
+}
+
+.overlay.show {
+  opacity:1;
+  pointer-events:auto;
+}
+
+.overlay h2 {
+  font-size: clamp(2rem,8vw,3rem);
+  margin-bottom: 10px;
+}
+
+.overlay span {
+  font-size:1.1rem;
+}
+
+/* confetti */
+.confetti {
+  position:absolute;
+  top:-20px;
+  font-size:18px;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110svh) rotate(360deg);
+    opacity:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- music -->
+<audio id="music" src="iris.mp3" loop autoplay muted></audio>
+
+<div class="volume" id="volBtn">🔇</div>
+
+<div class="card">
+  <div class="photo">
+    <img src="julianna.jpg" alt="Us 💖">
+  </div>
+
+  <h1>Julianna,<br>will you be my Valentine? 💖</h1>
+  <p>
+    I don’t want the world…<br>
+    I just want you 💕
+  </p>
+
+  <div class="buttons">
+    <button id="yes">YES 💘</button>
+    <button id="no">no 😐</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div>
+    <h2>💞 MWA MWA MWA 💞</h2>
+    <span style="font-size:1.4rem; font-weight:600;">
+      I LOVE YOU MY BABYYYY JULIANNA 💖💖💖
+    </span>
+  </div>
+</div>
+
+<script>
+const hearts = ["💖","💘","💕","💗","❤️","💞"];
+const music = document.getElementById("music");
+const volBtn = document.getElementById("volBtn");
+
+/* autoplay workaround: unmute on first interaction */
+document.body.addEventListener("click", () => {
+  music.muted = false;
+  music.play().catch(()=>{});
+  volBtn.textContent = "🔊";
+},{ once:true });
+
+/* volume toggle */
+volBtn.addEventListener("click", () => {
+  music.muted = !music.muted;
+  volBtn.textContent = music.muted ? "🔇" : "🔊";
+});
+
+/* floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=6+Math.random()*4+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),10000);
+},400);
+
+/* no button impossible */
+const no=document.getElementById("no");
+["mouseover","touchstart"].forEach(e=>{
+  no.addEventListener(e,ev=>{
+    ev.preventDefault();
+    const x=Math.random()*250-125;
+    const y=Math.random()*250-125;
+    no.style.transform=`translate(${x}px,${y}px)`;
+  });
+});
+
+/* yes celebration */
+const yes=document.getElementById("yes");
+const overlay=document.getElementById("overlay");
+
+yes.addEventListener("click",()=>{
+  overlay.classList.add("show");
+  explode();
+});
+
+function explode(){
+  for(let i=0;i<100;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+    c.style.left=Math.random()*100+"vw";
+    c.style.animationDuration=2+Math.random()*2+"s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+</script>
+
+</body>
+</html>
+
+
