@@ -1,2 +1,0 @@
-# HAII-BABYY
-wala lang
